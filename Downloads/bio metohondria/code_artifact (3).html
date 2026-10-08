@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark bg-[#05070a] text-slate-100 overflow-x-hidden selection:bg-cyan-400 selection:text-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Митохондрия — Энергетическая Станция</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        bio: {
+                            bg: '#05070a',
+                            card: 'rgba(12, 18, 32, 0.65)',
+                            emerald: '#10b981',
+                            cyan: '#06b6d4',
+                            accent: '#3b82f6',
+                            purple: '#a855f7',
+                            amber: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Animation & Scroll Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #05070a; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+
+        /* Smooth Scroll Lenis Rules */
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+        /* Hardware Acceleration Optimization */
+        .gpu-layer {
+            will-change: transform, opacity;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(12, 18, 32, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-glow-cyan {
+            background: rgba(12, 22, 38, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.15);
+        }
+
+        .glass-glow-emerald {
+            background: rgba(10, 26, 26, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Gradient Texts */
+        .gradient-main {
+            background: linear-gradient(135deg, #ffffff 0%, #06b6d4 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-warm {
+            background: linear-gradient(135deg, #ffffff 0%, #f59e0b 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bg-grid-pattern {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        /* Keyframes */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+        .animate-float-slow {
+            animation: floatSlow 7s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.08); }
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 5s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-bio-bg text-slate-100 font-sans antialiased relative bg-grid-pattern overflow-x-hidden">
+
+    <!-- Optimized Interactive Particle & Ions Canvas -->
+    <canvas id="bioCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-70"></canvas>
+
+    <!-- Main Container -->
+    <main class="relative z-10">
+
+        <!-- ================= HERO SECTION ================= -->
+        <section id="hero" class="min-h-screen relative flex flex-col justify-center items-center px-4 py-20 overflow-hidden">
+            
+            <!-- Dynamic Parallax Molecules in Background -->
+            <div class="parallax-elem absolute top-12 left-[6%] font-mono font-black text-6xl text-cyan-500/15 select-none pointer-events-none gpu-layer" data-speed="-1.8">
+                H⁺
+            </div>
+            <div class="parallax-elem absolute top-1/4 right-[8%] font-mono font-black text-7xl text-emerald-500/15 select-none pointer-events-none gpu-layer" data-speed="2.2">
+                АТФ
+            </div>
+            <div class="parallax-elem absolute bottom-28 left-[10%] font-mono font-black text-5xl text-purple-500/15 select-none pointer-events-none gpu-layer" data-speed="-1.2">
+                мтДНК
+            </div>
+            <div class="parallax-elem absolute bottom-36 right-[12%] font-mono font-black text-6xl text-blue-500/15 select-none pointer-events-none gpu-layer" data-speed="1.5">
+                O₂
+            </div>
+
+            <div class="max-w-5xl mx-auto text-center space-y-8 relative z-10">
+                
+                <!-- Badge -->
+                <div class="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-emerald-400 text-xs font-semibold uppercase tracking-widest border-emerald-500/30 shadow-lg gpu-layer">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    Биологический Двигатель Жизни
+                </div>
+
+                <!-- Giant Split Kinetic Title -->
+                <div class="relative py-2 overflow-hidden">
+                    <h1 class="hero-title-left text-6xl sm:text-8xl md:text-9xl font-black uppercase tracking-tighter text-white inline-block gpu-layer pr-2">
+                        МИТО
+                    </h1>
+                    <h1 class="hero-title-right text-6xl sm:text-8xl md:text-9xl font-black uppercase tracking-tighter gradient-main inline-block gpu-layer pl-2">
+                        ХОНДРИЯ
+                    </h1>
+                </div>
+
+                <p class="hero-sub text-slate-300 text-base sm:text-xl md:text-2xl max-w-3xl mx-auto font-light leading-relaxed gpu-layer">
+                    Микроскопическая <strong class="text-cyan-400 font-semibold">электростанция</strong>, внутри каждой вашей клетки. Превращает пищу и кислород в чистую энергию.
+                </p>
+
+                <!-- Central 3D-like Vector Organelle Model -->
+                <div class="hero-organelle relative w-72 h-72 sm:w-96 sm:h-96 mx-auto flex items-center justify-center py-4 gpu-layer">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 via-emerald-500/20 to-purple-500/10 rounded-full blur-3xl animate-pulse-glow"></div>
+                    
+                    <svg class="w-full h-full relative z-10 animate-float-slow drop-shadow-[0_0_35px_rgba(6,182,212,0.4)]" viewBox="0 0 500 500" fill="none">
+                        <defs>
+                            <linearGradient id="membraneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#06b6d4"/>
+                                <stop offset="50%" stop-color="#10b981"/>
+                                <stop offset="100%" stop-color="#3b82f6"/>
+                            </linearGradient>
+                            <linearGradient id="innerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#10b981"/>
+                                <stop offset="100%" stop-color="#06b6d4"/>
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Outer Capsule -->
+                        <ellipse cx="250" cy="250" rx="210" ry="125" stroke="url(#membraneGrad)" stroke-width="6" fill="rgba(6,182,212,0.03)" transform="rotate(-15 250 250)" />
+                        <!-- Inner Cristae Folds -->
+                        <path d="M 80 240 Q 130 170 190 240 T 290 210 T 360 260 T 420 230" stroke="url(#innerGrad)" stroke-width="9" stroke-linecap="round" fill="none"/>
+                        <path d="M 100 270 Q 160 320 220 260 T 320 290 T 390 250" stroke="url(#innerGrad)" stroke-width="9" stroke-linecap="round" fill="none"/>
+                        <!-- DNA Rings -->
+                        <ellipse cx="250" cy="240" rx="35" ry="20" stroke="#a855f7" stroke-width="4" stroke-dasharray="8 4" fill="none"/>
+                        <ellipse cx="210" cy="260" rx="25" ry="15" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6 3" fill="none"/>
+                        <!-- Ribosome Nodes -->
+                        <circle cx="160" cy="210" r="4" fill="#10b981"/>
+                        <circle cx="310" cy="230" r="5" fill="#06b6d4"/>
+                        <circle cx="280" cy="280" r="4" fill="#a855f7"/>
+                        <circle cx="190" cy="290" r="5" fill="#f59e0b"/>
+                    </svg>
+                </div>
+
+                <!-- Scroll Cue -->
+                <div class="pt-6 flex flex-col items-center gap-2 text-xs font-mono text-slate-400 uppercase tracking-widest">
+                    <span>Скрольте вниз для погружения</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-cyan-400 animate-bounce"></i>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= KINETIC MARQUEE ================= -->
+        <section class="py-5 border-y border-white/10 bg-slate-950/60 overflow-hidden select-none">
+            <div class="marquee-track flex whitespace-nowrap font-mono font-extrabold text-xl sm:text-3xl text-cyan-400/40 uppercase tracking-wider gpu-layer">
+                <span class="px-8 flex items-center gap-4"><i data-lucide="zap" class="text-emerald-400"></i> ЕДА + КИСЛОРОД = АТФ</span>
+                <span class="px-8 flex items-center gap-4"><i data-lucide="activity" class="text-cyan-400"></i> 38 МОЛЕКУЛ ЭНЕРГИИ С ОДНОЙ ГЛЮКОЗЫ</span>
+                <span class="px-8 flex items-center gap-4"><i data-lucide="cpu" class="text-purple-400"></i> 1000+ МИТОХОНДРИЙ В КАЖДОЙ КЛЕТКЕ</span>
+                <span class="px-8 flex items-center gap-4"><i data-lucide="dna" class="text-amber-400"></i> СОБСТВЕННАЯ ДНК МАТЕРИ</span>
+                <span class="px-8 flex items-center gap-4"><i data-lucide="zap" class="text-emerald-400"></i> ЕДА + КИСЛОРОД = АТФ</span>
+                <span class="px-8 flex items-center gap-4"><i data-lucide="activity" class="text-cyan-400"></i> 38 МОЛЕКУЛ ЭНЕРГИИ С ОДНОЙ ГЛЮКОЗЫ</span>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 1: ПРОСТЫМИ СЛОВАМИ ================= -->
+        <section id="simple-explanation" class="py-32 px-4 relative min-h-screen flex items-center">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+                
+                <!-- Narrative Column (Slides from Left) -->
+                <div class="lg:col-span-7 space-y-8 simple-left gpu-layer">
+                    <div class="inline-flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-widest">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        Суть простыми словами
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl md:text-6xl font-black text-white leading-tight">
+                        Зачем вашему телу <br>
+                        <span class="gradient-main">нужна митохондрия?</span>
+                    </h2>
+
+                    <p class="text-slate-300 text-base sm:text-xl font-light leading-relaxed">
+                        Каждую секунду вы дышите и едите. Но мышцы и мозг не умеют питаться напрямую яблоком или хлебом. Им нужна <strong class="text-cyan-400 font-semibold">универсальная биологическая батарейка</strong>.
+                    </p>
+
+                    <!-- Analogy Box -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="glass-card p-5 rounded-2xl border-cyan-500/20 space-y-2">
+                            <div class="text-cyan-400 font-extrabold text-base flex items-center gap-2">
+                                <i data-lucide="apple" class="w-5 h-5"></i> Сырье на входе
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Глюкоза из еды и Кислород из легких поступают прямо внутрь митохондрии.
+                            </p>
+                        </div>
+                        <div class="glass-card p-5 rounded-2xl border-emerald-500/20 space-y-2">
+                            <div class="text-emerald-400 font-extrabold text-base flex items-center gap-2">
+                                <i data-lucide="battery-charging" class="w-5 h-5"></i> Топливо на выходе
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Молекулы <strong>АТФ</strong> — заряженные аккумуляторы для удара сердца и каждой мысли.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Stats Column (Slides from Right) -->
+                <div class="lg:col-span-5 space-y-5 simple-right gpu-layer">
+                    
+                    <div class="glass-glow-emerald p-8 rounded-3xl space-y-3 relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/20 rounded-full blur-2xl"></div>
+                        <div class="text-4xl sm:text-5xl font-black text-emerald-400 font-mono">40 КГ</div>
+                        <h3 class="text-lg font-bold text-white">Суточная выработка АТФ</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Ваш организм ежедневно синтезирует и сразу расходует объём АТФ, почти равный массе вашего собственного тела!
+                        </p>
+                    </div>
+
+                    <div class="glass-glow-cyan p-8 rounded-3xl space-y-3 relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-cyan-500/20 rounded-full blur-2xl"></div>
+                        <div class="text-4xl sm:text-5xl font-black text-cyan-400 font-mono">10 000+</div>
+                        <h3 class="text-lg font-bold text-white">В клетках сердца и мозга</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Чем больше энергии нужно органу, тем больше в его клетках митохондрий. В мышцах и сердце их тысячи.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: УСТРОЙСТВО (ВЗРЫВ-СХЕМА) ================= -->
+        <section id="anatomy" class="py-32 px-4 relative min-h-screen flex items-center">
+            <div class="max-w-6xl mx-auto space-y-16 w-full">
+                
+                <div class="text-center space-y-4 max-w-3xl mx-auto anatomy-head gpu-layer">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Анатомический разбор</span>
+                    <h2 class="text-3xl sm:text-5xl md:text-6xl font-black text-white">
+                        Как устроена <span class="gradient-main">микрофабрика?</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        4 главных элемента. При скролле они распадаются в пространственную взрыв-схему.
+                    </p>
+                </div>
+
+                <!-- Exploded Cards 4-Column Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Layer 1 -->
+                    <div class="anatomy-card-1 glass-card p-6 rounded-3xl space-y-4 border-cyan-500/30 hover:border-cyan-400 transition-colors gpu-layer">
+                        <div class="w-10 h-10 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold font-mono text-sm">
+                            01
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Внешняя мембрана</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Защитная оболочка. Содержит особые белковые поры (порины), через которые внутрь проникают питательные вещества.
+                        </p>
+                        <div class="pt-2 text-[10px] font-mono text-cyan-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="shield" class="w-3.5 h-3.5"></i> Защита & Поры
+                        </div>
+                    </div>
+
+                    <!-- Layer 2 -->
+                    <div class="anatomy-card-2 glass-card p-6 rounded-3xl space-y-4 border-emerald-500/30 hover:border-emerald-400 transition-colors gpu-layer">
+                        <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold font-mono text-sm">
+                            02
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Кристы (Складки)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Глубокие складки внутренней мембраны. Они увеличивают рабочую площадь для размещения миллиона моторов АТФ.
+                        </p>
+                        <div class="pt-2 text-[10px] font-mono text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="layers" class="w-3.5 h-3.5"></i> Максимум площади
+                        </div>
+                    </div>
+
+                    <!-- Layer 3 -->
+                    <div class="anatomy-card-3 glass-card p-6 rounded-3xl space-y-4 border-purple-500/30 hover:border-purple-400 transition-colors gpu-layer">
+                        <div class="w-10 h-10 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold font-mono text-sm">
+                            03
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Матрикс</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Внутренний густой гель, насыщенный ферментами. Здесь происходят реакции цикла Кребса и расщепление сахаров.
+                        </p>
+                        <div class="pt-2 text-[10px] font-mono text-purple-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="droplet" class="w-3.5 h-3.5"></i> Химический реактор
+                        </div>
+                    </div>
+
+                    <!-- Layer 4 -->
+                    <div class="anatomy-card-4 glass-card p-6 rounded-3xl space-y-4 border-amber-500/30 hover:border-amber-400 transition-colors gpu-layer">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold font-mono text-sm">
+                            04
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Собственная ДНК</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Уникальный собственный геном (мтДНК). Передается исключительно от матери к детям без изменений.
+                        </p>
+                        <div class="pt-2 text-[10px] font-mono text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="dna" class="w-3.5 h-3.5"></i> Материнский код
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: АТФ-СИНТАЗА (МОЛЕКУЛЯРНЫЙ МОТОР) ================= -->
+        <section id="turbine" class="py-32 px-4 relative min-h-screen flex items-center">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+                
+                <!-- Left Details -->
+                <div class="lg:col-span-6 space-y-6 turbine-left gpu-layer">
+                    <div class="inline-flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-widest">
+                        <i data-lucide="cpu" class="w-4 h-4"></i>
+                        Нано-инженерия природы
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+                        АТФ-Синтаза: <br>
+                        <span class="gradient-warm">Вращающийся нано-турбомотор</span>
+                    </h2>
+
+                    <p class="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
+                        Внутри мембраны митохондрий работают настоящие вращающиеся электродвигатели. Поток протонов водорода ($H^+$) проходит через турбину, заставляя ее вращаться со скоростью до <strong class="text-amber-400 font-semibold">10 000 оборотов в минуту</strong>, механически сжимая и собирая молекулы АТФ.
+                    </p>
+
+                    <div class="p-6 rounded-2xl glass-card border-amber-500/20 space-y-3">
+                        <div class="flex items-center gap-3 text-amber-400 font-bold text-sm">
+                            <i data-lucide="rotate-cw" class="w-5 h-5 animate-spin"></i> Принцип Нано-ГЭС
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Как вода вращает турбину плотины ГЭС, так протоны водорода $H^+$ вращают ротор АТФ-синтазы, генерируя энергию для тела.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Visual Turbine Graphic -->
+                <div class="lg:col-span-6 flex justify-center turbine-right gpu-layer">
+                    <div class="glass-glow-cyan p-8 rounded-3xl w-full max-w-md text-center space-y-6 relative overflow-hidden">
+                        <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest">Схема работы мотора</div>
+                        
+                        <!-- Animated SVG Rotor -->
+                        <div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+                            <div class="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl animate-pulse"></div>
+                            
+                            <svg class="w-full h-full animate-spin" style="animation-duration: 12s;" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="80" stroke="#06b6d4" stroke-width="4" stroke-dasharray="12 8" fill="none"/>
+                                <circle cx="100" cy="100" r="40" stroke="#10b981" stroke-width="6" fill="none"/>
+                                <path d="M 100 20 L 100 60 M 100 140 L 100 180 M 20 100 L 60 100 M 140 100 L 180 100" stroke="#f59e0b" stroke-width="8" stroke-linecap="round"/>
+                            </svg>
+                            <div class="absolute font-mono font-black text-white text-sm">H⁺ DRIVE</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-left font-mono text-xs">
+                            <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5">
+                                <span class="text-slate-400 block text-[10px]">СКОРОСТЬ</span>
+                                <span class="text-cyan-400 font-bold">100+ об/сек</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5">
+                                <span class="text-slate-400 block text-[10px]">КПО (КПД)</span>
+                                <span class="text-emerald-400 font-bold">~100% Эффект</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: ЭНДОСИМБИОЗ ================= -->
+        <section id="origin" class="py-32 px-4 relative min-h-screen flex items-center">
+            <div class="max-w-5xl mx-auto space-y-12 w-full">
+                
+                <div class="glass-glow-emerald p-8 sm:p-14 rounded-3xl space-y-8 relative overflow-hidden origin-card gpu-layer">
+                    <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl"></div>
+                    
+                    <div class="inline-flex items-center gap-2 text-xs font-bold text-purple-400 uppercase tracking-widest">
+                        <i data-lucide="history" class="w-4 h-4"></i>
+                        Тайна происхождения
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+                        Древний пришелец <br>
+                        <span class="gradient-warm">внутри каждой нашей клетки</span>
+                    </h2>
+
+                    <p class="text-slate-300 text-base sm:text-xl leading-relaxed font-light">
+                        1.5 миллиарда лет назад предки наших клеток поглотили древнюю бактерию. Но вместо того чтобы быть переваренной, бактерия осталась жить внутри. Так родился <strong class="text-emerald-400 font-semibold">великий биологический симбиоз</strong>.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-white/10 text-xs text-slate-300">
+                        <div class="space-y-2">
+                            <div class="font-bold text-white text-sm flex items-center gap-2">
+                                <i data-lucide="dna" class="text-purple-400"></i> Свой геном
+                            </div>
+                            <p class="text-slate-400">Митохондрии имеют собственную ДНК, отличную от ДНК ядра клетки.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="font-bold text-white text-sm flex items-center gap-2">
+                                <i data-lucide="copy" class="text-cyan-400"></i> Деление
+                            </div>
+                            <p class="text-slate-400">Они размножаются сами по себе почкованием, как бактерии.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="font-bold text-white text-sm flex items-center gap-2">
+                                <i data-lucide="heart" class="text-emerald-400"></i> От мамы
+                            </div>
+                            <p class="text-slate-400">Все митохондрии передаются вам строго от вашей матери.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= FINAL CREDITS SECTION ================= -->
+        <section id="credits" class="py-28 px-4 relative">
+            <div class="max-w-4xl mx-auto text-center space-y-10">
+                
+                <div class="glass-glow-cyan p-10 sm:p-14 rounded-3xl space-y-10 relative overflow-hidden border-cyan-500/40 credits-card gpu-layer">
+                    <div class="absolute -top-20 -left-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl"></div>
+
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 text-cyan-300 text-xs font-extrabold uppercase tracking-widest border border-cyan-500/20">
+                        <i data-lucide="award" class="w-4 h-4"></i> Презентация проекта
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                        Митохондрия — Энергия Жизни
+                    </h2>
+
+                    <!-- Authors Info Cards Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 text-left">
+                        
+                        <!-- Author Card -->
+                        <div class="p-6 rounded-2xl bg-slate-900/90 border border-emerald-500/40 space-y-3 relative overflow-hidden group hover:border-emerald-400 transition-all">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all"></div>
+                            <div class="text-[11px] font-extrabold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="user-check" class="w-4 h-4"></i> Выполнил работу
+                            </div>
+                            <div class="text-2xl font-black text-white">Махди Мукамбетов</div>
+                            <div class="text-xs text-slate-400 font-light">Автор исследования, визуализации и интерактивного кода</div>
+                        </div>
+
+                        <!-- Teacher Card -->
+                        <div class="p-6 rounded-2xl bg-slate-900/90 border border-cyan-500/40 space-y-3 relative overflow-hidden group hover:border-cyan-400 transition-all">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-500/20 transition-all"></div>
+                            <div class="text-[11px] font-extrabold text-cyan-400 uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="graduation-cap" class="w-4 h-4"></i> Преподаватель
+                            </div>
+                            <div class="text-2xl font-black text-white">Айдар байке</div>
+                            <div class="text-xs text-slate-400 font-light">Научный руководитель и наставник</div>
+                        </div>
+
+                    </div>
+
+                    <div class="pt-6 border-t border-white/10 text-xs font-mono text-slate-500 flex flex-wrap items-center justify-between gap-4">
+                        <span>Биология &bull; Интерактивный интерактивный формат</span>
+                        <span>2026</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Initialize Icons
+            lucide.createIcons();
+
+            // 2. High-Performance Optimized Smooth Scroll (Lenis)
+            const lenis = new Lenis({
+                duration: 1.0,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true,
+                wheelMultiplier: 1.0,
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            // Connect GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+
+            // 3. Ultra-Fast Canvas Particles Renderer with DPR Cap for 60FPS
+            const canvas = document.getElementById('bioCanvas');
+            const ctx = canvas.getContext('2d', { alpha: true });
+            let w, h;
+
+            function resizeCanvas() {
+                // Cap DPR at 1.5 to avoid GPU choke on 4K/Retina displays
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+                w = canvas.width = window.innerWidth * dpr;
+                h = canvas.height = window.innerHeight * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const displayWidth = () => window.innerWidth;
+            const displayHeight = () => window.innerHeight;
+
+            // Particles Array (Optimized count: 32 nodes)
+            const particles = Array.from({ length: 32 }, () => ({
+                x: Math.random() * displayWidth(),
+                y: Math.random() * displayHeight(),
+                z: Math.random() * 1.5 + 0.5,
+                radius: Math.random() * 2.5 + 1,
+                color: Math.random() > 0.5 ? 'rgba(6, 182, 212, ' : 'rgba(16, 185, 129, ',
+                alpha: Math.random() * 0.4 + 0.15,
+                vx: (Math.random() - 0.5) * 0.25,
+                vy: (Math.random() - 0.5) * 0.25
+            }));
+
+            let scrollVel = 0;
+            lenis.on('scroll', (e) => {
+                scrollVel = e.velocity * 0.06;
+            });
+
+            function drawCanvas() {
+                const dw = displayWidth();
+                const dh = displayHeight();
+                ctx.clearRect(0, 0, dw, dh);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy - (scrollVel * p.z);
+
+                    // Screen wrap
+                    if (p.x < 0) p.x = dw;
+                    if (p.x > dw) p.x = 0;
+                    if (p.y < 0) p.y = dh;
+                    if (p.y > dh) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius * p.z, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color + p.alpha + ')';
+                    ctx.fill();
+                });
+
+                scrollVel *= 0.92; // Smooth velocity decay
+                requestAnimationFrame(drawCanvas);
+            }
+            drawCanvas();
+
+            // 4. RICH DYNAMIC GSAP SCROLLANIMATIONS (Hardware Accelerated)
+
+            // Hero Section Parallax Splitting Title
+            gsap.to('.hero-title-left', {
+                x: -80,
+                opacity: 0.3,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 0.5
+                }
+            });
+
+            gsap.to('.hero-title-right', {
+                x: 80,
+                opacity: 0.3,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 0.5
+                }
+            });
+
+            gsap.to('.hero-organelle', {
+                scale: 1.25,
+                rotate: 25,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 0.5
+                }
+            });
+
+            // Parallax Floating Background Chemicals
+            document.querySelectorAll('.parallax-elem').forEach(el => {
+                const speed = parseFloat(el.dataset.speed) || 1;
+                gsap.to(el, {
+                    y: speed * 140,
+                    force3D: true,
+                    scrollTrigger: {
+                        trigger: '#hero',
+                        start: 'top top',
+                        end: 'bottom top',
+                        scrub: 0.5
+                    }
+                });
+            });
+
+            // Marquee Track Motion
+            gsap.to('.marquee-track', {
+                xPercent: -25,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '.marquee-track',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 0.5
+                }
+            });
+
+            // Section 1 Simple Explanation Slide In
+            gsap.from('.simple-left', {
+                x: -70,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#simple-explanation',
+                    start: 'top 75%',
+                    end: 'top 30%',
+                    scrub: 0.5
+                }
+            });
+
+            gsap.from('.simple-right', {
+                x: 70,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#simple-explanation',
+                    start: 'top 75%',
+                    end: 'top 30%',
+                    scrub: 0.5
+                }
+            });
+
+            // Section 2 Anatomy Exploded-View 4-Layer Separation
+            gsap.from('.anatomy-card-1', {
+                y: -40,
+                x: -30,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#anatomy',
+                    start: 'top 70%',
+                    end: 'top 30%',
+                    scrub: 0.5
+                }
+            });
+
+            gsap.from('.anatomy-card-2', {
+                y: 40,
+                x: -15,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#anatomy',
+                    start: 'top 70%',
+                    end: 'top 30%',
+                    scrub: 0.5
+                }
+            });
+
+            gsap.from('.anatomy-card-3', {
+                y: -40,
+                x: 15,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#anatomy',
+                    start: 'top 70%',
+                    end: 'top 30%',
+                    scrub: 0.5
+                }
+            });
+
+            gsap.from('.anatomy-card-4', {
+                y: 40,
+                x: 30,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#anatomy',
+                    start: 'top 70%',
+                    end: 'top 30%',
+                    scrub: 0.5
+                }
+            });
+
+            // Section 3 Turbine Slide
+            gsap.from('.turbine-left', {
+                x: -60,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#turbine',
+                    start: 'top 75%',
+                    end: 'top 35%',
+                    scrub: 0.5
+                }
+            });
+
+            gsap.from('.turbine-right', {
+                x: 60,
+                scale: 0.9,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#turbine',
+                    start: 'top 75%',
+                    end: 'top 35%',
+                    scrub: 0.5
+                }
+            });
+
+            // Section 4 Origin Box Reveal
+            gsap.from('.origin-card', {
+                scale: 0.9,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#origin',
+                    start: 'top 80%',
+                    end: 'top 35%',
+                    scrub: 0.5
+                }
+            });
+
+            // Credits Section Card Reveal
+            gsap.from('.credits-card', {
+                y: 50,
+                opacity: 0,
+                force3D: true,
+                scrollTrigger: {
+                    trigger: '#credits',
+                    start: 'top 85%',
+                    end: 'top 45%',
+                    scrub: 0.5
+                }
+            });
+        });
+    </script>
+</body>
+</html>
